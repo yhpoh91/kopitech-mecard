@@ -44,7 +44,7 @@ const getData = () => ({
 
 const controller = async (req, res, next) => {
   try {
-    const template = "taby-portrait";
+    const template = "taby-universal";
 
     const me = getData();
     res.render(template, me);
