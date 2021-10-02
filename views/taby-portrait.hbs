@@ -48,8 +48,8 @@
         width: 100%;
         height: 100%;
         background-color: #759d99;
-        -webkit-clip-path: polygon(66% 0%, 100% 0%, 100% 100%, 50% 100%);
-        clip-path: polygon(66% 0%, 100% 0%, 100% 100%, 50% 100%);
+        -webkit-clip-path: polygon(0% 66%, 100% 50%, 100% 100%, 0% 100%);
+        clip-path: polygon(0% 66%, 100% 50%, 100% 100%, 0% 100%);
       }
 
       .h1-label {
@@ -106,7 +106,7 @@
       </div>
 
       <div style="position: absolute; left: 0; top: 0; display: flex; flex-direction: row; height: 100%; width: 100%; align-items: flex-end; justify-content: flex-end;">
-        <img src="https://storage.googleapis.com/taby-app-media/web/taby-logo-white.png" alt="logo" width="149" height="50" style="margin-right: 16px; margin-bottom: 16px;" />
+        <img src="https://storage.googleapis.com/taby-app-media/web/taby-logo-white.png" alt="logo" width="90" height="30" style="margin-right: 25px; margin-bottom: 32px;" />
       </div>
 
       <div style="width: 100%; height: 100%; position: absolute; left: 0; top: 0; padding: 16px; display: flex; flex-direction: column; justify-content: space-between;">
@@ -121,17 +121,15 @@
           <a href="{{contact.github.url}}"><p class="item">GitHub: {{contact.github.handle}}</p></a>
         </div>
 
+        <div class="data-section" style="width: 100%; display: flex; flex-direction: row; justify-content: center;">
+          <div style="background-color: white; padding: 10px; border-radius: 10px;">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?data={{vcard.url}}&amp;size=150x150" alt="vcard-qr"/>
+          </div>
+        </div>
+
         <div class="data-section">
           <h4 class="h4-label-heavy">{{career.company.name}}</h4>
           <h4 class="h4-label"><a href="{{career.company.website}}">{{career.company.website}}</a></h4>
-        </div>
-      </div>
-
-      
-
-      <div class="data-section" style="position: absolute; right: 15px; top: 50px;">
-        <div style="background-color: white; padding: 10px; border-radius: 10px;">
-          <img src="https://api.qrserver.com/v1/create-qr-code/?data={{vcard.url}}&amp;size=150x150" alt="vcard-qr"/>
         </div>
       </div>
     </div>
