@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const http = require('http');
+const hbs = require('express-hbs');
 
 Promise = require('bluebird');
 
@@ -17,6 +18,8 @@ const requestMaxSize = '150mb';
 const app = express();
 
 app.set('trust proxy', true);
+app.engine('hbs', hbs.express4());
+app.set('view engine', 'hbs');
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true, limit: requestMaxSize }));
 app.use(bodyParser.json({ limit: requestMaxSize }));
