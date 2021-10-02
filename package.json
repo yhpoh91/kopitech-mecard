@@ -1,0 +1,55 @@
+{
+  "name": "kopitech-mecard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src",
+    "migrate": "sequelize-cli db:migrate",
+    "undomigrate": "sequelize-cli db:migrate:undo",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "taby"
+  ],
+  "author": "Yee Hui Poh <yhpoh91@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/polyfill": "^7.2.5",
+    "axios": "^0.18.0",
+    "bluebird": "^3.7.2",
+    "body-parser": "^1.18.3",
+    "compression": "^1.7.4",
+    "connection-string-parser": "^1.0.3",
+    "cookie-parser": "^1.4.4",
+    "cors": "^2.8.5",
+    "dotenv": "^8.0.0",
+    "express": "^4.16.4",
+    "express-validation": "^1.0.2",
+    "helmet": "^3.15.1",
+    "joi": "^14.3.1",
+    "kopitech-authentication-client": "^1.0.8",
+    "kopitech-logger": "^1.0.1",
+    "kopitech-token-client": "^1.0.1",
+    "pg": "^7.12.1",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^5.19.2",
+    "uuid": "^3.3.3"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-jest": "^24.1.0",
+    "babel-preset-env": "^1.7.0",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "coveralls": "^3.0.3",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "esm": "^3.2.25",
+    "jest": "^24.1.0",
+    "mocha": "^6.0.1",
+    "regenerator-runtime": "^0.13.2",
+    "sequelize-cli": "^5.5.1"
+  }
+}

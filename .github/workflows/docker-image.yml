@@ -1,0 +1,36 @@
+name: Upload Docker
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+    
+env:
+  APP_NAME: 'yhpoh91/kopitech-mecard'
+  VERSION_MAJOR: 1
+  VERSION_MINOR: $(date -u +"%Y%m%d")
+  VERSION_PATCH: $(date -u +"%H%M%S")
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+jobs:
+  build_docker:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Docker Image Version
+      run: |
+        echo "IMAGE_VERSION=${{ env.VERSION_MAJOR }}.${{ env.VERSION_MINOR }}.${{ env.VERSION_PATCH }}" >> $GITHUB_ENV
+        echo Docker Image $IMAGE_VERSION
+    - name: Login Docker Hub
+      run: docker login -u ${{ env.DOCKER_USERNAME }} -p ${{ env.DOCKER_PASSWORD }}
+    - name: Build Docker Image
+      run: docker build -t ${{ env.APP_NAME }} . 
+    - name: Tag Docker Image
+      run: docker tag ${{ env.APP_NAME }} ${{ env.APP_NAME }}:${{ env.IMAGE_VERSION }}
+    - name: Upload Docker image (tagged)
+      run: docker push ${{ env.APP_NAME }}:${{ env.IMAGE_VERSION }}
+    - name: Upload Docker image (latest)
+      run: docker push ${{ env.APP_NAME }}

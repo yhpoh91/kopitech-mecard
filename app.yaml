@@ -1,0 +1,15 @@
+runtime: nodejs12
+instance_class: F1
+service: kopitech-mecard
+
+automatic_scaling:
+  min_idle_instances: 1
+
+env_variables:
+  IGNORE_FIRESTORE_CONFIG: "false"
+
+handlers:
+- url: /.*
+  secure: always
+  redirect_http_response_code: 301
+  script: auto
