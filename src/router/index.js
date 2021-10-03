@@ -6,6 +6,10 @@ const { L } = require('kopitech-logger')('Global Router');
 const router = express.Router({ mergeParams: true });
 
 const getData = () => ({
+  mecard: {
+    id: 'yeehuipoh',
+    url: `/yeehuipoh/manifest.json`,
+  },
   vcard: {
     url: `${process.env.HOST}/yeehuipoh/vcard`,
   },
@@ -79,10 +83,44 @@ const vcardController = async (req, res, next) => {
   }
 }
 
+const manifestController = async (req, res, next) => {
+  try {
+    const me = getData();
+    const manifest = {
+      "short_name": "Mecard",
+      "name": `Mecard - ${me.personal.firstName} ${me.personal.lastName}`,
+      "description": `Kopitech Mecard for ${me.personal.firstName} ${me.personal.lastName}`,
+      "icons": [
+        {
+          "src": "https://storage.googleapis.com/taby-app-media/web/taby-logo-round.png",
+          "type": "image/png",
+          "sizes": "512x512",
+          "purpose": "any maskable",
+        }
+      ],
+      "start_url": `/${me.mecard.id}`,
+      "background_color": "#fcc47d",
+      "display": "standalone",
+      "scope": "/",
+      "theme_color": "#fcc47d"
+    };
+
+    res.json(manifest);
+  } catch (error) {
+    L.error(error);
+    next(error);
+  }
+}
+
+router.use(express.static('public'));
+
 router.route('/yeehuipoh')
   .get(controller);
 
 router.route('/yeehuipoh/vcard')
   .get(vcardController);
+
+router.route('/yeehuipoh/manifest.json')
+  .get(manifestController);
 
 module.exports = router;
