@@ -8,7 +8,7 @@ const router = express.Router({ mergeParams: true });
 const getData = () => ({
   mecard: {
     id: 'yeehuipoh',
-    url: `/yeehuipoh/manifest.json`,
+    url: `${process.env.HOST}/yeehuipoh/manifest.json`,
   },
   vcard: {
     url: `${process.env.HOST}/yeehuipoh/vcard`,
