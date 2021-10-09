@@ -20,7 +20,7 @@ self.addEventListener('activate', event => {
         .map(key => caches.delete(key))
       ))
       .then(() => console.log('WORKER: activate completed.'))
-      .catch(console.error);
+      .catch(console.error)
   );
 });
 
