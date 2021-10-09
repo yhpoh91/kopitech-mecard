@@ -98,7 +98,7 @@ const manifestController = async (req, res, next) => {
           "purpose": "any maskable",
         }
       ],
-      "start_url": `//${me.mecard.id}`,
+      "start_url": `/${me.mecard.id}`,
       "background_color": "#fcc47d",
       "display": "standalone",
       "scope": "/",
