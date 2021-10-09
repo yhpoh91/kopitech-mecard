@@ -189,8 +189,10 @@
     </div>
 
     <script>
+      console.log(`Checking Navigator`);
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('//service-worker.js');
+        console.log(`Registering Service Worker`);
+        navigator.serviceWorker.register('/service-worker.js');
       }
     </script>
   </body>
