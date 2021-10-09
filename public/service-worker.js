@@ -1,49 +1,68 @@
-const PRECACHE_URLS = ['./'];
+const VERSION = 'v1';
+const RESOURCES = ['/', './'];
 
-// The install handler takes care of precaching the resources we always need.
 self.addEventListener('install', event => {
+  console.log('WORKER: install event in progress.');
   event.waitUntil(
-    caches.open(PRECACHE)
-      .then(cache => cache.addAll(PRECACHE_URLS))
-      .then(self.skipWaiting())
+    caches.open(`${VERSION}::fundamental`)
+      .then(cache => cache.addAll(RESOURCES))
+      .then(() => console.log(`WORKER: install completed`))
+      .catch(console.error);
   );
 });
 
-// The activate handler takes care of cleaning up old caches.
 self.addEventListener('activate', event => {
-  const currentCaches = [PRECACHE, RUNTIME];
+  console.log('WORKER: activate event in progress.');
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return cacheNames.filter(cacheName => !currentCaches.includes(cacheName));
-    }).then(cachesToDelete => {
-      return Promise.all(cachesToDelete.map(cacheToDelete => {
-        return caches.delete(cacheToDelete);
-      }));
-    }).then(() => self.clients.claim())
+    caches.keys()
+      .then(keys => {
+        return Promise.all(keys
+          .filter(key => !key.startsWith(version))
+          .map(key => caches.delete(key))
+        );
+      })
+      .then(() => console.log('WORKER: activate completed.'));
+      .catch(console.error);
   );
 });
 
-// The fetch handler serves responses for same-origin resources from a cache.
-// If no response is found, it populates the runtime cache with the response
-// from the network before returning it to the page.
 self.addEventListener('fetch', event => {
-  // Skip cross-origin requests, like those for Google Analytics.
-  if (event.request.url.startsWith(self.location.origin)) {
-    event.respondWith(
-      caches.match(event.request).then(cachedResponse => {
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-
-        return caches.open(RUNTIME).then(cache => {
-          return fetch(event.request).then(response => {
-            // Put a copy of the response in the runtime cache.
-            return cache.put(event.request, response.clone()).then(() => {
-              return response;
-            });
-          });
-        });
-      })
-    );
+  console.log('WORKER: fetch event in progress.');
+  if (event.request.method !== 'GET') {
+    console.log(`WORKER: fetch event ignored. (NOT GET)`, event.request.method, event.request.url);
+    return;
   }
+
+  const fetchedFromNetwork = (response) => {
+    const cacheCopy = response.clone();
+    console.log(`WORKER: fetch response from network.`, event.request.url);
+    caches.open(`${VERSION}::pages`)
+      .then((cache) => cache.put(event.request, cacheCopy))
+      .then(() => console.log('WORKER: fetch response stored in cache.', event.request.url))
+      .catch(console.error);
+
+    return response;
+  }
+
+  const unableToResolve = () => {
+    console.log('WORKER: fetch request failed in both cache and network.');
+    return new Response('<h1>Service Unavailable</h1>', {
+      status: 503,
+      statusText: 'Service Unavailable',
+      headers: new Headers({
+        'Content-Type': 'text/html'
+      })
+    });
+  }
+
+  event.respondWith(
+    caches.match(event.request)
+      .then(cached => {
+        const networked = fetch(event.request)
+          .then(fetchedFromNetwork, unableToResolve)
+          .catch(unableToResolve);
+        console.log('WORKER: fetch event', cached ? '(cached)' : '(network)', event.request.url);
+        return cached || networked;
+      })
+  );
 });
