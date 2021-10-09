@@ -62,6 +62,6 @@ self.addEventListener('fetch', event => {
         console.log('WORKER: fetch event', cached ? '(cached)' : '(network)', event.request.url);
         return cached || networked;
       })
-      .catch(console.error);
+      .catch(console.error)
   );
 });
