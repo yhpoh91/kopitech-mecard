@@ -1,5 +1,5 @@
 const VERSION = 'v1';
-const RESOURCES = ['/', './'];
+const RESOURCES = ['/'];
 
 self.addEventListener('install', event => {
   console.log('WORKER: install event in progress.');
@@ -16,7 +16,7 @@ self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys()
       .then(keys => Promise.all(keys
-        .filter(key => !key.startsWith(version))
+        .filter(key => !key.startsWith(VERSION))
         .map(key => caches.delete(key))
       ))
       .then(() => console.log('WORKER: activate completed.'))
