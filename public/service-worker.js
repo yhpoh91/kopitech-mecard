@@ -7,7 +7,7 @@ self.addEventListener('install', event => {
     caches.open(`${VERSION}::fundamental`)
       .then(cache => cache.addAll(RESOURCES))
       .then(() => console.log(`WORKER: install completed`))
-      .catch(console.error);
+      .catch(console.error)
   );
 });
 
@@ -15,13 +15,11 @@ self.addEventListener('activate', event => {
   console.log('WORKER: activate event in progress.');
   event.waitUntil(
     caches.keys()
-      .then(keys => {
-        return Promise.all(keys
-          .filter(key => !key.startsWith(version))
-          .map(key => caches.delete(key))
-        );
-      })
-      .then(() => console.log('WORKER: activate completed.'));
+      .then(keys => Promise.all(keys
+        .filter(key => !key.startsWith(version))
+        .map(key => caches.delete(key))
+      ))
+      .then(() => console.log('WORKER: activate completed.'))
       .catch(console.error);
   );
 });
@@ -64,5 +62,6 @@ self.addEventListener('fetch', event => {
         console.log('WORKER: fetch event', cached ? '(cached)' : '(network)', event.request.url);
         return cached || networked;
       })
+      .catch(console.error);
   );
 });
