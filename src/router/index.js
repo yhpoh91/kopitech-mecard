@@ -6,7 +6,7 @@ const { L } = require('kopitech-logger')('Global Router');
 const router = express.Router({ mergeParams: true });
 
 const getData = (mecardId) => {
-  const idInsert = mecardId ? `${mecardId}_` : '';
+  const idInsert = (mecardId ? `${mecardId}_` : '').toUpperCase();
   return {
     mecard: {
       id: mecardId,
