@@ -8,6 +8,10 @@ const router = express.Router({ mergeParams: true });
 const getData = (mecardId) => {
   const idInsert = (mecardId ? `${mecardId}_` : '').toUpperCase();
   return {
+    template: {
+      name: process.env[`MECARD_${idInsert}TEMPLATE_NAME`],
+      theme: process.env[`MECARD_${idInsert}TEMPLATE_THEME`],
+    },
     mecard: {
       id: mecardId,
       url: `${process.env.HOST}/${mecardId}/manifest.json`,
@@ -43,6 +47,7 @@ const getData = (mecardId) => {
       company: {
         name: process.env[`MECARD_${idInsert}CAREER_COMPANY_NAME`],
         website: process.env[`MECARD_${idInsert}CAREER_COMPANY_WEBSITE`],
+        icon: process.env[`MECARD_${idInsert}CAREER_COMPANY_ICON`],
       },
       position: process.env[`MECARD_${idInsert}CAREER_POSITION`],
     },
@@ -52,10 +57,8 @@ const getData = (mecardId) => {
 const controller = async (req, res, next) => {
   try {
     const { mecardId } = req.params;
-    const template = "taby-universal";
-
     const me = getData(mecardId);
-    res.render(template, me);
+    res.render(me.template.name, me);
   } catch (error) {
     L.error(error);
     next(error);
@@ -97,17 +100,17 @@ const manifestController = async (req, res, next) => {
       "description": `Kopitech Mecard for ${me.personal.firstName} ${me.personal.lastName}`,
       "icons": [
         {
-          "src": "https://storage.googleapis.com/taby-app-media/web/taby-logo-round.png",
+          "src": me.career.company.icon,
           "type": "image/png",
           "sizes": "512x512",
           "purpose": "any maskable",
         }
       ],
       "start_url": `/${me.mecard.id}`,
-      "background_color": "#fcc47d",
+      "background_color": me.template.theme,
       "display": "standalone",
       "scope": "/",
-      "theme_color": "#fcc47d"
+      "theme_color": me.template.theme,
     };
 
     res.json(manifest);
