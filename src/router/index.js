@@ -14,7 +14,8 @@ const getData = (mecardId) => {
     },
     mecard: {
       id: mecardId,
-      url: `${process.env.HOST}/${mecardId}/manifest.json`,
+      url: `${process.env.HOST}/${mecardId}`,
+      manifest: `${process.env.HOST}/${mecardId}/manifest.json`,
     },
     vcard: {
       url: `${process.env.HOST}/${mecardId}/vcard`,
