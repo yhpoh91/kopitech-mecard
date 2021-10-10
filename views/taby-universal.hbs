@@ -165,14 +165,14 @@
           <h1 class="h1-label">{{personal.firstName}} {{personal.lastName}}</h1>
           <h3 class="h3-label">{{career.position}}</h3>
 
-          <a href="tel:{{contact.phoneNumber}}"><p class="item">Phone: {{contact.phoneNumber}}</p></a>
-          <a href="mailto:{{contact.email}}"><p class="item">Email: {{contact.email}}</p></a>
+          {{#if contact.phoneNumber}}<a href="tel:{{contact.phoneNumber}}"><p class="item">Phone: {{contact.phoneNumber}}</p></a>{{/if}}
+          {{#if contact.email}}<a href="mailto:{{contact.email}}"><p class="item">Email: {{contact.email}}</p></a>{{/if}}
 
           <div class="small-vertical-gap"></div>
 
-          <a href="{{contact.wechat.url}}"><p class="item">Wechat: {{contact.wechat.handle}}</p></a>
-          <a href="{{contact.linkedIn.url}}"><p class="item">LinkedIn: {{contact.linkedIn.handle}}</p></a>
-          <a href="{{contact.github.url}}"><p class="item">GitHub: {{contact.github.handle}}</p></a>
+          {{#if contact.wechat}}<a href="{{contact.wechat.url}}"><p class="item">Wechat: {{contact.wechat.handle}}</p></a>{{/if}}
+          {{#if contact.linkedIn}}<a href="{{contact.linkedIn.url}}"><p class="item">LinkedIn: {{contact.linkedIn.handle}}</p></a>{{/if}}
+          {{#if contact.github}}<a href="{{contact.github.url}}"><p class="item">GitHub: {{contact.github.handle}}</p></a>{{/if}}
         </div>
 
         <div class="data-section" style="width: 100%; display: flex; flex-direction: row; justify-content: center;">
