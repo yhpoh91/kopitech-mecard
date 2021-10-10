@@ -5,52 +5,56 @@ const { L } = require('kopitech-logger')('Global Router');
 
 const router = express.Router({ mergeParams: true });
 
-const getData = () => ({
-  mecard: {
-    id: 'yeehuipoh',
-    url: `${process.env.HOST}/yeehuipoh/manifest.json`,
-  },
-  vcard: {
-    url: `${process.env.HOST}/yeehuipoh/vcard`,
-  },
-  personal: {
-    firstName: process.env.MECARD_PERSONAL_FIRST_NAME,
-    lastName: process.env.MECARD_PERSONAL_LAST_NAME,
-  },
+const getData = (mecardId) => {
+  const idInsert = mecardId ? `${mecardId}_` : '';
+  return {
+    mecard: {
+      id: mecardId,
+      url: `${process.env.HOST}/${mecardId}/manifest.json`,
+    },
+    vcard: {
+      url: `${process.env.HOST}/${mecardId}/vcard`,
+    },
+    personal: {
+      firstName: process.env[`MECARD_${idInsert}PERSONAL_FIRST_NAME`],
+      lastName: process.env[`MECARD_${idInsert}PERSONAL_LAST_NAME`],
+    },
 
-  contact: {
-    email: process.env.MECARD_CONTACT_EMAIL,
-    phoneNumber: process.env.MECARD_CONTACT_PHONE_NUMBER,
-    wechat: (process.env.MECARD_CONTACT_WECHAT_ENABLED || 'true') === 'true' && {
-      handle: process.env.MECARD_CONTACT_WECHAT_HANDLE,
-      url: `weixin://dl/profile/${process.env.MECARD_CONTACT_WECHAT_HANDLE}`,
+    contact: {
+      email: process.env[`MECARD_${idInsert}CONTACT_EMAIL`],
+      phoneNumber: process.env[`MECARD_${idInsert}CONTACT_PHONE_NUMBER`],
+      wechat: (process.env[`MECARD_${idInsert}CONTACT_WECHAT_ENABLED`] || 'true') === 'true' && {
+        handle: process.env[`MECARD_${idInsert}CONTACT_WECHAT_HANDLE`],
+        url: `weixin://dl/profile/${process.env[`MECARD_${idInsert}CONTACT_WECHAT_HANDLE`]}`,
+      },
+      
+      linkedIn: (process.env[`MECARD_${idInsert}CONTACT_LINKEDIN_ENABLED`] || 'true') === 'true' && {
+        handle: `@${process.env[`MECARD_${idInsert}CONTACT_LINKEDIN_HANDLE`]}`,
+        url: `https://linkedin.com/in/${process.env[`MECARD_${idInsert}CONTACT_LINKEDIN_HANDLE`]}`,
+      },
+      
+      github: (process.env[`MECARD_${idInsert}CONTACT_GITHUB_ENABLED`] || 'true') === 'true' && {
+        handle: `@${process.env[`MECARD_${idInsert}CONTACT_GITHUB_HANDLE`]}`,
+        url: `https://github.com/${process.env[`MECARD_${idInsert}CONTACT_GITHUB_HANDLE`]}`,
+      },
     },
-    
-    linkedIn: (process.env.MECARD_CONTACT_LINKEDIN_ENABLED || 'true') === 'true' && {
-      handle: `@${process.env.MECARD_CONTACT_LINKEDIN_HANDLE}`,
-      url: `https://linkedin.com/in/${process.env.MECARD_CONTACT_LINKEDIN_HANDLE}`,
-    },
-    
-    github: (process.env.MECARD_CONTACT_GITHUB_ENABLED || 'true') === 'true' && {
-      handle: `@${process.env.MECARD_CONTACT_GITHUB_HANDLE}`,
-      url: `https://github.com/${process.env.MECARD_CONTACT_GITHUB_HANDLE}`,
-    },
-  },
 
-  career: {
-    company: {
-      name: process.env.MECARD_CAREER_COMPANY_NAME,
-      website: process.env.MECARD_CAREER_COMPANY_WEBSITE,
+    career: {
+      company: {
+        name: process.env[`MECARD_${idInsert}CAREER_COMPANY_NAME`],
+        website: process.env[`MECARD_${idInsert}CAREER_COMPANY_WEBSITE`],
+      },
+      position: process.env[`MECARD_${idInsert}CAREER_POSITION`],
     },
-    position: process.env.MECARD_CAREER_POSITION,
-  },
-});
+  };
+};
 
 const controller = async (req, res, next) => {
   try {
+    const { mecardId } = req.params;
     const template = "taby-universal";
 
-    const me = getData();
+    const me = getData(mecardId);
     res.render(template, me);
   } catch (error) {
     L.error(error);
@@ -60,8 +64,8 @@ const controller = async (req, res, next) => {
 
 const vcardController = async (req, res, next) => {
   try {
-    
-    const me = getData();
+    const { mecardId } = req.params;
+    const me = getData(mecardId);
     const vcard = new VCard();
     vcard
       .addName(me.personal.lastName, me.personal.firstName)
@@ -85,7 +89,8 @@ const vcardController = async (req, res, next) => {
 
 const manifestController = async (req, res, next) => {
   try {
-    const me = getData();
+    const { mecardId } = req.params;
+    const me = getData(mecardId);
     const manifest = {
       "short_name": "Mecard",
       "name": `Mecard - ${me.personal.firstName} ${me.personal.lastName}`,
@@ -114,13 +119,13 @@ const manifestController = async (req, res, next) => {
 
 router.use(express.static('public'));
 
-router.route('/yeehuipoh')
+router.route('/:mecardId')
   .get(controller);
 
-router.route('/yeehuipoh/vcard')
+router.route('/:mecardId/vcard')
   .get(vcardController);
 
-router.route('/yeehuipoh/manifest.json')
+router.route('/:mecardId/manifest.json')
   .get(manifestController);
 
 module.exports = router;
